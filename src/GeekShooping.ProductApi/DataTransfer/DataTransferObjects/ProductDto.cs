@@ -1,4 +1,6 @@
-﻿namespace GeekShooping.ProductApi.DataTransfer.DataTransferObjects
+﻿using GeekShooping.ProductApi.Model.Base;
+
+namespace GeekShooping.ProductApi.DataTransfer.DataTransferObjects
 {
     public class ProductDto
     {
@@ -7,7 +9,6 @@
         public decimal Price { get; set; }
         public string Description { get; set; }
         public Category Category { get; set; }
-
         public string ImageUrl { get; set; }
     }
 }
