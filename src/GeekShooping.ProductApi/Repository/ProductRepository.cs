@@ -35,6 +35,7 @@ namespace GeekShooping.ProductApi.Repository
 
         public async Task<ProductDto> Create(ProductDto productDto)
         {
+            //var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == productDto.CategoryId);
             Product product = _mapper.Map<Product>(productDto);
             _context.Products
                 .Add(product);

@@ -11,9 +11,8 @@ namespace GeekShooping.ProductApi.Model.Base
         [Range(1, 10000)]
         public decimal Price { get; set; }
         [StringLength(500)]
-        public string Description { get; set; }
-        [Required]
-        public Category Category { get; set; }
+        public string Description { get; set; }        
+        public string Category { get; set; }
         [StringLength(300)]
         public string ImageUrl { get; set; }
     }

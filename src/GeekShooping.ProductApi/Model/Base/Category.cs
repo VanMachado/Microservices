@@ -3,9 +3,8 @@
 namespace GeekShooping.ProductApi.Model.Base
 {
     public class Category : BaseEntity
-    {
-        [Required]
-        [StringLength(50)]
+    {        
+        [StringLength(150)]
         public string Name { get; set; }
     }
 }

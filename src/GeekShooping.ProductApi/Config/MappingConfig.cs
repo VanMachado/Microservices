@@ -15,6 +15,6 @@ namespace GeekShooping.ProductApi.Config
             });
             
             return mappingConfig;
-        }
+        }       
     }
 }
