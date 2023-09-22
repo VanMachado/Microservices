@@ -10,11 +10,12 @@ namespace GeekShooping.ProductApi.Config
         {
             var mappingConfig = new MapperConfiguration(config =>
             {
-                config.CreateMap<ProductDto, Product>();
-                config.CreateMap<Product, ProductDto>();
+                config.CreateMap<ProductDto, Product>()
+                    .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category)).ReverseMap();                
+                config.CreateMap<CategoryDto, Category>().ReverseMap();                
             });
-            
+
             return mappingConfig;
-        }       
+        }
     }
 }

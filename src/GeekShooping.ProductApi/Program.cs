@@ -15,7 +15,8 @@ builder.Services.AddSqlServer<ApplicationDbContext>(builder.Configuration["Conne
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-//builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<SeedingService>();
 
 var app = builder.Build();
 
@@ -25,6 +26,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.Services.CreateScope()
+    .ServiceProvider.GetRequiredService<SeedingService>().Seed();
 
 app.UseAuthorization();
 

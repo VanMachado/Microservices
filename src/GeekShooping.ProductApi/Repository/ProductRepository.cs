@@ -18,9 +18,9 @@ namespace GeekShooping.ProductApi.Repository
         }
 
         public async Task<IEnumerable<ProductDto>> FindAll()
-        {
+        {            
             List<Product> products = await _context
-                .Products.ToListAsync();
+                .Products.Include(p => p.Category).ToListAsync();                       
 
             return _mapper.Map<List<ProductDto>>(products);
         }
@@ -29,14 +29,16 @@ namespace GeekShooping.ProductApi.Repository
         {
             Product product = await _context
                 .Products.Where(x => x.Id == id).FirstOrDefaultAsync();
-            
+
             return _mapper.Map<ProductDto>(product);
         }
 
         public async Task<ProductDto> Create(ProductDto productDto)
         {
-            //var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == productDto.CategoryId);
+            var category = await _context.Categories.FindAsync(productDto.CategoryId);
             Product product = _mapper.Map<Product>(productDto);
+            product.Category = category;
+            
             _context.Products
                 .Add(product);
             await _context.SaveChangesAsync();
@@ -59,7 +61,7 @@ namespace GeekShooping.ProductApi.Repository
             {
                 Product product = await _context
                     .Products.Where(x => x.Id == id).FirstOrDefaultAsync();
-                
+
                 if (product == null)
                     return false;
 

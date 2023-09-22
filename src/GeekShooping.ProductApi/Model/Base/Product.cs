@@ -9,10 +9,11 @@ namespace GeekShooping.ProductApi.Model.Base
         public string Name { get; set; }
         [Required]
         [Range(1, 10000)]
-        public decimal Price { get; set; }
+        public double Price { get; set; }
         [StringLength(500)]
-        public string Description { get; set; }        
-        public string Category { get; set; }
+        public string Description { get; set; }
+        public long CategoryId { get; set; }
+        public Category Category { get; set; }
         [StringLength(300)]
         public string ImageUrl { get; set; }
     }
