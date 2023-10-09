@@ -75,6 +75,8 @@ namespace GeekShopping.Web.Controllers
         public async Task<IActionResult> ProductDelete(int id)
         {
             var model = await _productService.FindProductById(id);
+            var category = await _categoryService.FindCategoryById(model.CategoryId);
+            model.Category = category;
             if (model != null)
                 return View(model);
 
@@ -84,9 +86,11 @@ namespace GeekShopping.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ProductDelete(ProductModel model)
         {
-            var response = await _productService.DeleteProductById(model.Id);
+            var response = await _productService.DeleteProductById(model.Id);        
             if (response)
+            {
                 return RedirectToAction(nameof(ProductIndex));
+            }
 
             return View(model);
         }

@@ -34,5 +34,15 @@ namespace GeekShopping.Web.Services
 
             throw new Exception("Somenthing went wrong when calling API");
         }
+
+        public async Task<bool> CategoryDeleteById(long id)
+        {
+            var response = await _client.DeleteAsync($"{BasePath}/{id}");
+
+            if (response.IsSuccessStatusCode)
+                return await response.ReadContentAs<bool>();
+
+            throw new Exception("Somenthing went wrong when calling API");
+        }
     }
 }
