@@ -34,5 +34,16 @@ namespace GeekShooping.ProductApi.Controllers
 
             return Ok(product);
         }
+
+        [HttpPost]
+        public async Task<ActionResult<CategoryDto>> Create([FromBody] CategoryDto categoryDto)
+        {
+            if (categoryDto == null)
+                return BadRequest();
+
+            var product = await _repository.Create(categoryDto);
+
+            return Ok(product);
+        }
     }
 }

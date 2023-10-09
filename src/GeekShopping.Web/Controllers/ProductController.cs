@@ -47,6 +47,9 @@ namespace GeekShopping.Web.Controllers
         public async Task<IActionResult> ProductUpdate(long id)
         {
             var model = await _productService.FindProductById(id);
+            var category = await _categoryService.FindCategoryById(model.CategoryId);
+            model.Category = category;
+
             if (model != null)
                 return View(model);
 
@@ -59,6 +62,9 @@ namespace GeekShopping.Web.Controllers
             if (ModelState.IsValid)
             {
                 var response = await _productService.UpdateProduct(model);
+                var category = await _categoryService.FindCategoryById(model.CategoryId);
+                model.Category = category;
+
                 if (response != null)
                     return RedirectToAction(nameof(ProductIndex));
             }

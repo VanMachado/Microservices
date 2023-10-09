@@ -24,5 +24,15 @@ namespace GeekShopping.Web.Services
             var response = await _client.GetAsync($"{BasePath}/{id}");
             return await response.ReadContentAs<CategoryModel>();
         }
+
+        public async Task<CategoryModel> CategoryCreate(CategoryModel model)
+        {
+            var response = await _client.PostAsJson(BasePath, model);
+
+            if (response.IsSuccessStatusCode)
+                return await response.ReadContentAs<CategoryModel>();
+
+            throw new Exception("Somenthing went wrong when calling API");
+        }
     }
 }

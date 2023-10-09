@@ -8,7 +8,7 @@ namespace GeekShooping.ProductApi.Repository
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;        
         private readonly IMapper _mapper;
 
         public ProductRepository(ApplicationDbContext context, IMapper mapper)
@@ -35,7 +35,7 @@ namespace GeekShooping.ProductApi.Repository
 
         public async Task<ProductDto> Create(ProductDto productDto)
         {
-            var category = await _context.Categories.FindAsync(productDto.CategoryId);
+            var category = await _context.Categories.FindAsync(productDto.CategoryId);            
             Product product = _mapper.Map<Product>(productDto);
             product.Category = category;
             
@@ -48,6 +48,8 @@ namespace GeekShooping.ProductApi.Repository
         public async Task<ProductDto> Update(ProductDto productDto)
         {
             Product product = _mapper.Map<Product>(productDto);
+            Category category = await _context.Categories.FindAsync(productDto.CategoryId);
+            product.Category = category;
             _context.Products
                 .Update(product);
             await _context.SaveChangesAsync();
