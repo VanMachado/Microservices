@@ -37,7 +37,7 @@ namespace GeekShooping.ProductApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProductDto>> Create(ProductDto productDto)
+        public async Task<ActionResult<ProductDto>> Create([FromBody] ProductDto productDto)
         {
             if (productDto == null)
                 return BadRequest();
@@ -48,7 +48,7 @@ namespace GeekShooping.ProductApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<ProductDto>> Update(ProductDto productDto)
+        public async Task<ActionResult<ProductDto>> Update([FromBody] ProductDto productDto)
         {
             if (productDto == null)
                 return BadRequest();
@@ -60,7 +60,7 @@ namespace GeekShooping.ProductApi.Controllers
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(long id)
-        {            
+        {
             var status = await _repository.Delete(id);
             if (!status)
                 BadRequest();
