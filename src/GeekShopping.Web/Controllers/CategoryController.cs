@@ -1,5 +1,8 @@
 ﻿using GeekShopping.Web.Models;
 using GeekShopping.Web.Services.IServices;
+using GeekShopping.Web.Utils;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GeekShopping.Web.Controllers
@@ -14,9 +17,11 @@ namespace GeekShopping.Web.Controllers
                 throw new ArgumentNullException(nameof(categoryService)); ;
         }
 
+        [Authorize]
         public async Task <IActionResult> CategoryIndex()
         {
-            var categories = await _categoryService.FindAllCategories();
+            var token = await HttpContext.GetTokenAsync("access_token");
+            var categories = await _categoryService.FindAllCategories(token);
             return View(categories);
         }
 
@@ -26,11 +31,13 @@ namespace GeekShopping.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CategoryCreate(CategoryModel model)
         {           
             if (ModelState.IsValid)
             {
-                var response = await _categoryService.CategoryCreate(model);
+                var token = await HttpContext.GetTokenAsync("access_token");
+                var response = await _categoryService.CategoryCreate(model, token);
                 if (response != null)
                     return RedirectToAction(nameof(CategoryIndex));
             }
@@ -38,9 +45,11 @@ namespace GeekShopping.Web.Controllers
             return View(model);
         }
 
+        [Authorize]
         public async Task<IActionResult> CategoryDelete(int id)
         {
-            var model = await _categoryService.FindCategoryById(id);
+            var token = await HttpContext.GetTokenAsync("access_token");
+            var model = await _categoryService.FindCategoryById(id, token);
             if (model != null)
                 return View(model);
 
@@ -48,9 +57,11 @@ namespace GeekShopping.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> CategoryDelete(ProductModel model)
         {
-            var response = await _categoryService.CategoryDeleteById(model.Id);
+            var token = await HttpContext.GetTokenAsync("access_token");
+            var response = await _categoryService.CategoryDeleteById(model.Id, token);
             if (response)
                 return RedirectToAction(nameof(CategoryIndex));
 
