@@ -19,7 +19,7 @@ namespace GeekShooping.IdentityServer.Configuration
         public static IEnumerable<ApiScope> ApiScopes =>
             new List<ApiScope>
             {
-                new ApiScope("geek_shooping", "Geek Shooping Server"),
+                new ApiScope("geek_shopping", "Geek Shooping Server"),
                 new ApiScope(name: "read", "Read data."),
                 new ApiScope(name: "write", "Write data."),
                 new ApiScope(name: "delete", "Delete data.")
@@ -37,7 +37,7 @@ namespace GeekShooping.IdentityServer.Configuration
                 },
                 new Client
                 {
-                    ClientId = "geek_shooping",
+                    ClientId = "geek_shopping",
                     ClientSecrets = { new Secret("my_secret".Sha256()) },
                     AllowedGrantTypes = GrantTypes.Code,
                     RedirectUris = {"https://localhost:4430/signin-oidc"},
@@ -47,7 +47,7 @@ namespace GeekShooping.IdentityServer.Configuration
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Email,
                         IdentityServerConstants.StandardScopes.Profile,
-                        "geek_shooping"
+                        "geek_shopping"
                     }
                 }
             };

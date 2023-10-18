@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GeekShooping.IdentityServer.Migrations
 {
-    public partial class DefaultSecurityTablesOnDb : Migration
+    public partial class AddDefaultSecurityTablesOnDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
