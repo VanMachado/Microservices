@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeekShopping.Web", "GeekSho
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeekShooping.ProductApi", "GeekShooping.ProductApi\GeekShooping.ProductApi.csproj", "{5EC5E48C-E102-45B3-800F-D52A7CF68AC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeekShooping.IdentityServer", "GeekShooping.IdentityServer\GeekShooping.IdentityServer.csproj", "{286F4A4F-F03F-459B-BE68-286D4E7A7101}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeekShooping.IdentityServer", "GeekShooping.IdentityServer\GeekShooping.IdentityServer.csproj", "{286F4A4F-F03F-459B-BE68-286D4E7A7101}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeekShopping.CartAPI", "GeekShopping.CartAPI\GeekShopping.CartAPI.csproj", "{DE2FD069-B78C-4BA0-A3E7-4D1A725FA0DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +33,10 @@ Global
 		{286F4A4F-F03F-459B-BE68-286D4E7A7101}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{286F4A4F-F03F-459B-BE68-286D4E7A7101}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{286F4A4F-F03F-459B-BE68-286D4E7A7101}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE2FD069-B78C-4BA0-A3E7-4D1A725FA0DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE2FD069-B78C-4BA0-A3E7-4D1A725FA0DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE2FD069-B78C-4BA0-A3E7-4D1A725FA0DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE2FD069-B78C-4BA0-A3E7-4D1A725FA0DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +45,7 @@ Global
 		{AF22351E-4C67-4526-9A0A-679A50033BE2} = {7B22C701-1486-47B4-9992-4DF8BCD9A70C}
 		{5EC5E48C-E102-45B3-800F-D52A7CF68AC3} = {D135D238-5799-4536-B4E8-D5D8ADD91D22}
 		{286F4A4F-F03F-459B-BE68-286D4E7A7101} = {D135D238-5799-4536-B4E8-D5D8ADD91D22}
+		{DE2FD069-B78C-4BA0-A3E7-4D1A725FA0DD} = {D135D238-5799-4536-B4E8-D5D8ADD91D22}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE159113-7D84-4F14-9952-1F2D1F6A5CD7}
