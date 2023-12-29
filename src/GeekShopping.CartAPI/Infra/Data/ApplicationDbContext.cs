@@ -1,4 +1,4 @@
-﻿using GeekShopping.CartAPI.Model.Base;
+﻿using GeekShopping.CartAPI.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace GeekShopping.CartAPI.Infra.Data
@@ -7,8 +7,10 @@ namespace GeekShopping.CartAPI.Infra.Data
     {
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<CartDetail> CartDetails { get; set; }
+        public DbSet<CartHeader> CartHeaders { get; set; }
 
-        protected ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
     }

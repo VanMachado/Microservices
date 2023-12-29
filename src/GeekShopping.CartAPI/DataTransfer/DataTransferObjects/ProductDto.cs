@@ -1,4 +1,4 @@
-﻿using GeekShopping.CartAPI.Model.Base;
+﻿using GeekShopping.CartAPI.Model;
 
 namespace GeekShopping.CartAPI.DataTransfer.DataTransferObjects
 {

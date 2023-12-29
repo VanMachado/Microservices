@@ -28,7 +28,9 @@ namespace GeekShooping.ProductApi.Repository
         public async Task<ProductDto> FindById(long id)
         {
             Product product = await _context
-                .Products.Where(x => x.Id == id).FirstOrDefaultAsync();
+                .Products.Where(x => x.Id == id)
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync();
 
             return _mapper.Map<ProductDto>(product);
         }

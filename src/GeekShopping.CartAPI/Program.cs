@@ -1,7 +1,7 @@
 using AutoMapper;
-using GeekShooping.ProductApi.Repository;
 using GeekShopping.CartAPI.Config;
 using GeekShopping.CartAPI.Infra.Data;
+using GeekShopping.CartAPI.Repository;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 
 // Add services to the container.
+builder.Services.AddControllers();
+
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
@@ -59,8 +61,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddSqlServer<ApplicationDbContext>(builder.Configuration["ConnectionStrings:CartAPI"]);
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
 
 var app = builder.Build();
 
