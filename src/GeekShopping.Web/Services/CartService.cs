@@ -30,7 +30,7 @@ namespace GeekShopping.Web.Services
             if (response.IsSuccessStatusCode)
                 return await response.ReadContentAs<CartViewModel>();
 
-            else throw new Exception("Somenthing went wrong when calling API");
+            else throw new Exception($"Somenthing went wrong when calling API.");
         }
 
         public async Task<CartViewModel> UpdateCart(CartViewModel cart, string token)

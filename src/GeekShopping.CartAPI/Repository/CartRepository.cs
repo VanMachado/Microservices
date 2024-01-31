@@ -37,13 +37,15 @@ namespace GeekShopping.CartAPI.Repository
             //Checa se o produto ja existe no DB
             var product = await _context.Products.FirstOrDefaultAsync(
                 p => p.Id == dto.CartDetails.FirstOrDefault().ProductId);
-            var category = await _context.Categories.FirstOrDefaultAsync(
-                c => c.Id == product.CategoryId);
-            product.Category = category;
+            
             //Caso nao exista, cria o mesmo
             if (product == null)
             {
-                _context.Add(cart.CartDetails.FirstOrDefault().Product);
+                var productAux = _context.Products.Where(
+                    p => p.Id == cart.CartDetails.FirstOrDefault().ProductId)
+                    .Include(C => C.Category).FirstOrDefault();                
+                _context.Products.Add(productAux);                
+
                 await _context.SaveChangesAsync();
             }
             //Checa se o CartHeader nao for null
@@ -54,7 +56,7 @@ namespace GeekShopping.CartAPI.Repository
             {
                 _context.CartHeaders.Add(cart.CartHeader);
                 await _context.SaveChangesAsync();
-                await CheckCart(cart, cartHeader);
+                await CheckCart(cart);
             }
             else
             {
@@ -66,7 +68,7 @@ namespace GeekShopping.CartAPI.Repository
                 if (cartDetail == null)
                 {
                     //Cria o CartDetail                    
-                    await CheckCart(cart, cartHeader);
+                    await CheckCart(cart);
                 }
                 else
                 {
@@ -142,9 +144,9 @@ namespace GeekShopping.CartAPI.Repository
             throw new NotImplementedException();
         }        
 
-        private async Task CheckCart(Cart cart, CartHeader header)
+        private async Task CheckCart(Cart cart)
         {
-            cart.CartDetails.FirstOrDefault().CartHeaderId = header.Id;
+            cart.CartDetails.FirstOrDefault().CartHeaderId = cart.CartHeader.Id;
             cart.CartDetails.FirstOrDefault().Product = null;
             _context.CartDetails.Add(cart.CartDetails.FirstOrDefault());
             await _context.SaveChangesAsync();
