@@ -26,7 +26,7 @@ namespace GeekShopping.CartAPI.Repository
             };
             cart.CartDetails = _context.CartDetails
                 .Where(p => p.CartHeaderId == cart.CartHeader.Id)
-                .Include(p => p.Product);
+                .Include(p => p.Product).Include(c => c.Category);                      
 
             return _mapper.Map<CartDto>(cart);
         }
@@ -35,16 +35,23 @@ namespace GeekShopping.CartAPI.Repository
         {
             Cart cart = _mapper.Map<Cart>(dto);
             //Checa se o produto ja existe no DB
-            var product = await _context.Products.FirstOrDefaultAsync(
+            var product = await _context.Products.Include(c => c.Category).FirstOrDefaultAsync(
                 p => p.Id == dto.CartDetails.FirstOrDefault().ProductId);
-            
-            //Caso nao exista, cria o mesmo
+
+            //Caso nao exista, cria o mesmos
             if (product == null)
             {
-                var productAux = _context.Products.Where(
-                    p => p.Id == cart.CartDetails.FirstOrDefault().ProductId)
-                    .Include(C => C.Category).FirstOrDefault();                
-                _context.Products.Add(productAux);                
+                var cartDetail = cart.CartDetails.FirstOrDefault();
+                var categoryAux = cartDetail.Category;
+                var productAux = cartDetail.Product;
+                var category = _mapper.Map<Category>(categoryAux);
+                productAux.Category = category;
+                var prod = _mapper.Map<Product>(productAux);
+                _context.Categories.Add(category);
+                _context.Products.Add(prod);
+
+                await _context.SaveChangesAsync();
+
 
                 await _context.SaveChangesAsync();
             }
@@ -68,7 +75,7 @@ namespace GeekShopping.CartAPI.Repository
                 if (cartDetail == null)
                 {
                     //Cria o CartDetail                    
-                    await CheckCart(cart);
+                    await CheckCartHeader(cart, cartHeader);
                 }
                 else
                 {
@@ -147,6 +154,14 @@ namespace GeekShopping.CartAPI.Repository
         private async Task CheckCart(Cart cart)
         {
             cart.CartDetails.FirstOrDefault().CartHeaderId = cart.CartHeader.Id;
+            cart.CartDetails.FirstOrDefault().Product = null;
+            _context.CartDetails.Add(cart.CartDetails.FirstOrDefault());
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task CheckCartHeader(Cart cart, CartHeader cartHeader)
+        {
+            cart.CartDetails.FirstOrDefault().CartHeaderId = cartHeader.Id;
             cart.CartDetails.FirstOrDefault().Product = null;
             _context.CartDetails.Add(cart.CartDetails.FirstOrDefault());
             await _context.SaveChangesAsync();

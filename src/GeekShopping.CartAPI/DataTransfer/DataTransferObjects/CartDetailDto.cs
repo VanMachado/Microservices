@@ -9,7 +9,9 @@ namespace GeekShopping.CartAPI.DataTransfer.DataTransferObjects
         public long CartHeaderId { get; set; } 
         public CartHeaderDto CartHeader { get; set; }
         public long ProductId { get; set; } 
-        public ProductDto Product { get; set; } 
+        public ProductDto Product { get; set; }
+        public long CategoryId { get; set; }
+        public CategoryDto Category { get; set; }
         public int Count { get; set; }
 
     }

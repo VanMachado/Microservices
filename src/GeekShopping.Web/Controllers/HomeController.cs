@@ -46,7 +46,7 @@ namespace GeekShopping.web.Controllers
         [Authorize]
         public async Task<IActionResult> DetailsPost(ProductModel model)
         {
-            var token = await HttpContext.GetTokenAsync("access_token");
+            var token = await HttpContext.GetTokenAsync("access_token");            
             CartViewModel cart = new()
             {
                 CartHeader = new CartHeaderViewmModel
@@ -59,8 +59,10 @@ namespace GeekShopping.web.Controllers
             {
                 Count = model.Count,
                 ProductId = model.Id,
-                Product = await _productService.FindProductById(model.Id, token),
+                Product = await _productService.FindProductById(model.Id, token)                
             };
+            cartDetail.CategoryId = cartDetail.Product.CategoryId;
+            cartDetail.Category = cartDetail.Product.Category;
 
             List<CartDetailViewModel> cartDetails = new List<CartDetailViewModel>();
             cartDetails.Add(cartDetail);

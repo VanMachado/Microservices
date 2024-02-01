@@ -1,6 +1,4 @@
-﻿using GeekShooping.ProductApi.Model.Base;
-
-namespace GeekShooping.ProductApi.DataTransfer.DataTransferObjects
+﻿namespace GeekShooping.ProductApi.DataTransfer.DataTransferObjects
 {
     public class ProductDto
     {
@@ -9,7 +7,7 @@ namespace GeekShooping.ProductApi.DataTransfer.DataTransferObjects
         public double Price { get; set; }
         public string Description { get; set; }
         public long CategoryId { get; set; }
-        public Category Category { get; set; }
+        public CategoryDto Category { get; set; }
         public string ImageUrl { get; set; }
     }
 }

@@ -4,7 +4,7 @@
 
 namespace GeekShopping.CartAPI.Migrations
 {
-    public partial class AddCartDataTablesOnDb : Migration
+    public partial class AdequacaoCartApi : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -64,6 +64,7 @@ namespace GeekShopping.CartAPI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CartHeaderId = table.Column<long>(type: "bigint", nullable: false),
                     ProductId = table.Column<long>(type: "bigint", nullable: false),
+                    CategoryId = table.Column<long>(type: "bigint", nullable: false),
                     count = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -76,6 +77,12 @@ namespace GeekShopping.CartAPI.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_cart_detail_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
                         name: "FK_cart_detail_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
@@ -87,6 +94,11 @@ namespace GeekShopping.CartAPI.Migrations
                 name: "IX_cart_detail_CartHeaderId",
                 table: "cart_detail",
                 column: "CartHeaderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_cart_detail_CategoryId",
+                table: "cart_detail",
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_cart_detail_ProductId",

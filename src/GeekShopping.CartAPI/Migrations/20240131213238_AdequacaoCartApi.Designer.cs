@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GeekShopping.CartAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231228162657_AddCartDataTablesOnDb")]
-    partial class AddCartDataTablesOnDb
+    [Migration("20240131213238_AdequacaoCartApi")]
+    partial class AdequacaoCartApi
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -35,6 +35,9 @@ namespace GeekShopping.CartAPI.Migrations
                     b.Property<long>("CartHeaderId")
                         .HasColumnType("bigint");
 
+                    b.Property<long>("CategoryId")
+                        .HasColumnType("bigint");
+
                     b.Property<int>("Count")
                         .HasColumnType("int")
                         .HasColumnName("count");
@@ -45,6 +48,8 @@ namespace GeekShopping.CartAPI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CartHeaderId");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("ProductId");
 
@@ -128,6 +133,12 @@ namespace GeekShopping.CartAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GeekShopping.CartAPI.Model.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("GeekShopping.CartAPI.Model.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
@@ -135,6 +146,8 @@ namespace GeekShopping.CartAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("CartHeader");
+
+                    b.Navigation("Category");
 
                     b.Navigation("Product");
                 });
