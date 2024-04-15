@@ -1,12 +1,18 @@
 ﻿@model GeekShopping.Web.Models.ProductModel
 
+@{
+    System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("pt-BR");
+    System.Threading.Thread.CurrentThread.CurrentCulture = culture;
+    System.Threading.Thread.CurrentThread.CurrentUICulture = culture;
+}
+
 <form asp-action="ProductUpdate">
     <input asp-for="Id" hidden>
-    <br/>
+    <br />
     <div class="container border p-3">
         <h1 class="text-primary">Update Product</h1>
 
-        <hr/>
+        <hr />
         <div class="row">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -14,23 +20,22 @@
                 <label asp-for="Name" class="control-label pt-2" style="font-size=20px;"></label>
             </div>
             <div class="col-10 pb-3">
-                <input asp-for="Name" class="form-control"/>
-                <span asp-validation-for="Name" class="text-danger"/>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger" />
             </div>
             <div class="col-2">
-                <label asp-for="CategoryId" class="control-label pt-2" style="font-size=20px;"></label>
+                <label asp-for="Category" class="control-label pt-2" style="font-size=20px;">Category</label>
             </div>
             <div class="col-10 pb-3">
-                <input asp-for="CategoryId" class="form-control"/>
-                <span asp-validation-for="CategoryId" class="text-danger"/>
-            </div> 
-            <div class="col-2">
-                <label asp-for="Category" class="control-label pt-2" style="font-size=20px;"></label>
+                <select asp-for="CategoryId" class="form-control">
+                    <option value="">Select a Category</option>
+                    @foreach (var category in Model.AvailableCategories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger" />
             </div>
-            <div class="col-10 pb-3">
-                <input asp-for="Category.Name" class="form-control"/>
-                <span asp-validation-for="Category.Name" class="text-danger"/>
-            </div>  
             <div class="col-2">
                 <label asp-for="Description" class="control-label pt-2" style="font-size:20px;"></label>
             </div>
@@ -49,21 +54,39 @@
                 <label asp-for="Price" class="control-label pt-2" style="font-size:20px;"></label>
             </div>
             <div class="col-10 pb-3">
-                <input asp-for="Price" class="form-control" asp-format="{0:#,###.00}"/>
+                <input id="Price" asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
-
             <div class="col-5 offset-2">
                 <a asp-action="ProductIndex" class="btn-primary btn form-control ">Back to List</a>
             </div>
 
             <div class="col-5">
-                <input type="submit" value="Update" class="btn btn-success form-control"/>
+                <input type="submit" value="Update" class="btn btn-success form-control" />
             </div>
         </div>
     </div>
 </form>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial">
-}
+<script>
+    $(document).ready(function() {
+        // Sobrescreve o método de validação "range" do jQuery Validator
+        $.validator.methods.range = function(value, element, param) {
+            // Remove qualquer ponto do valor e substitui a vírgula decimal por ponto
+            var globalizedValue = value.replace(/\./g, '').replace(',', '.');
+
+            // Verifica se o valor está dentro do intervalo
+            return this.optional(element) ||
+                (globalizedValue >= param[0] &&
+                    globalizedValue <= param[1]);
+        };
+
+        // Sobrescreve o método de validação "number" do jQuery Validator
+        $.validator.methods.number = function(value, element) {
+            // Testa se o valor é um número com ponto ou vírgula decimal
+            return this.optional(element) ||
+                /^-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\.,]\d+)?$/
+                    .test(value);
+        };
+    });
+</script>

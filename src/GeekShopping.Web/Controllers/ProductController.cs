@@ -4,6 +4,7 @@ using GeekShopping.Web.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GeekShopping.Web.Controllers
 {
@@ -30,7 +31,15 @@ namespace GeekShopping.Web.Controllers
 
         public async Task<IActionResult> ProductCreate()
         {
-            return View();
+            var token = await HttpContext.GetTokenAsync("access_token");
+            var categoryList = await _categoryService.FindAllCategories(token);
+
+            var model = new ProductModel
+            {
+                AvailableCategories = categoryList
+            };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -38,8 +47,8 @@ namespace GeekShopping.Web.Controllers
         public async Task<IActionResult> ProductCreate(ProductModel model)
         {
             var token = await HttpContext.GetTokenAsync("access_token");
-            var category = await _categoryService.FindCategoryById(model.CategoryId, token);
-            model.Category = category;
+            var category = await _categoryService.FindCategoryById(model.CategoryId, token);            
+            model.Category = category;                            
 
             if (ModelState.IsValid)
             {                
@@ -55,8 +64,8 @@ namespace GeekShopping.Web.Controllers
         {
             var token = await HttpContext.GetTokenAsync("access_token");
             var model = await _productService.FindProductById(id, token);
-            var category = await _categoryService.FindCategoryById(model.CategoryId, token);
-            model.Category = category;
+            var categories = await _categoryService.FindAllCategories(token);
+            model.AvailableCategories = categories;
 
             if (model != null)
                 return View(model);

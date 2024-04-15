@@ -9,6 +9,7 @@ namespace GeekShopping.Web.Models
         public double Price { get; set; }
         public string Description { get; set; }
         public long CategoryId { get; set; }
+        public IEnumerable<CategoryModel> AvailableCategories { get; set; }
         public CategoryModel Category { get; set; }        
         public string ImageUrl { get; set; }
         [Range(1, 100)]
