@@ -26,7 +26,7 @@ namespace GeekShopping.CartAPI.Repository
             };
             cart.CartDetails = _context.CartDetails
                 .Where(p => p.CartHeaderId == cart.CartHeader.Id)
-                .Include(p => p.Product).Include(c => c.Category);                      
+                .Include(p => p.Product);                     
 
             return _mapper.Map<CartDto>(cart);
         }
@@ -41,19 +41,19 @@ namespace GeekShopping.CartAPI.Repository
             //Caso nao exista, cria o mesmos
             if (product == null)
             {
-                var cartDetail = cart.CartDetails.FirstOrDefault();                
+                var cartDetail = cart.CartDetails.FirstOrDefault();
+                var productValue = cartDetail.Product;
+                var category = await _context.Categories.Where(c => c.Id == productValue.CategoryId).FirstOrDefaultAsync();
 
-                if (product.Category == null)
+                if (category == null)
                 {
                     _context.Add(await _context.Categories
-                        .FirstOrDefaultAsync(p => p.Id == dto.CartDetails.FirstOrDefault().CategoryId));
+                        .FirstOrDefaultAsync(p => p.Id == product.CategoryId));
                     await _context.SaveChangesAsync();
                 }
 
-                var productValue = cartDetail.Product;
-                //productValue.Category = category;
-                
-                _context.Products.Add(productValue);              
+                productValue.Category = category;
+                _context.Products.Add(productValue);
                 await _context.SaveChangesAsync();
             }
             //Checa se o CartHeader nao for null

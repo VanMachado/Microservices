@@ -14,8 +14,7 @@ namespace GeekShopping.CartAPI.Config
                     .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category)).ReverseMap();
                 config.CreateMap<CartHeaderDto, CartHeader>().ReverseMap();
                 config.CreateMap<CartDetailDto, CartDetail>()
-                    .ForMember(dest => dest.Product, opt => opt.MapFrom(src => src.Product)).ReverseMap() 
-                    .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category)).ReverseMap();                    
+                    .ForMember(dest => dest.Product, opt => opt.MapFrom(src => src.Product)).ReverseMap();                                       
                 config.CreateMap<CartDto, Cart>().ReverseMap();
                 config.CreateMap<CategoryDto, Category>().ReverseMap();                
             });
