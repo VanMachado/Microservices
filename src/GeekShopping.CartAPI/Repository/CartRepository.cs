@@ -18,15 +18,15 @@ namespace GeekShopping.CartAPI.Repository
         }
 
         public async Task<CartDto> FindCartByUserId(string userId)
-        {            
+        {
             //Instanciado o cart
             Cart cart = new()
             {
-                CartHeader = await _context.CartHeaders.FirstOrDefaultAsync(x => x.UserId == userId),                
+                CartHeader = await _context.CartHeaders.FirstOrDefaultAsync(x => x.UserId == userId),
             };
             cart.CartDetails = _context.CartDetails
                 .Where(p => p.CartHeaderId == cart.CartHeader.Id)
-                .Include(p => p.Product);                     
+                .Include(p => p.Product);
 
             return _mapper.Map<CartDto>(cart);
         }
@@ -111,14 +111,14 @@ namespace GeekShopping.CartAPI.Repository
 
                 _context.CartDetails.Remove(cartDetail);
 
-                if(total == 1)
+                if (total == 1)
                 {
                     var cartHeaderToRemove = await _context.CartHeaders
                         .FirstOrDefaultAsync(p => p.Id == cartDetail.CartHeaderId);
                     _context.CartHeaders.Remove(cartHeaderToRemove);
 
                 }
-                
+
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -134,7 +134,7 @@ namespace GeekShopping.CartAPI.Repository
             var cartHeader = await _context.CartHeaders
                         .FirstOrDefaultAsync(p => p.UserId == userId);
 
-            if(cartHeader != null)
+            if (cartHeader != null)
             {
                 _context.CartDetails.RemoveRange(
                     _context.CartDetails.Where(p => p.CartHeaderId == cartHeader.Id));
@@ -150,12 +150,38 @@ namespace GeekShopping.CartAPI.Repository
 
         public async Task<bool> ApplyCoupon(string userId, string couponCode)
         {
-            throw new NotImplementedException();
+            var header = await _context.CartHeaders
+                        .FirstOrDefaultAsync(p => p.UserId == userId);
+
+            if (header != null)
+            {
+                header.CouponCode = couponCode;
+
+                _context.CartHeaders.Update(header);
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+
+            return false;
         }
 
         public async Task<bool> RemoveCoupon(string userId)
         {
-            throw new NotImplementedException();
-        }        
+            var header = await _context.CartHeaders
+                        .FirstOrDefaultAsync(p => p.UserId == userId);
+
+            if (header != null)
+            {
+                header.CouponCode = "";
+
+                _context.CartHeaders.Update(header);
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+
+            return false;
+        }
     }
 }

@@ -32,6 +32,8 @@ builder.Services.AddHttpClient<ICategoryService, CategoryService>(c =>
     c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductApi"]));
 builder.Services.AddHttpClient<ICartService, CartService>(c =>
     c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CartApi"]));
+builder.Services.AddHttpClient<ICouponService, CouponService>(c =>
+    c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CoupontApi"]));
 
 var app = builder.Build();
 
