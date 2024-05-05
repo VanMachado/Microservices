@@ -1,6 +1,7 @@
 using AutoMapper;
 using GeekShopping.CartAPI.Config;
 using GeekShopping.CartAPI.Infra.Data;
+using GeekShopping.CartAPI.RabbitMQSender;
 using GeekShopping.CartAPI.Repository;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -62,6 +63,7 @@ builder.Services.AddSqlServer<ApplicationDbContext>(builder.Configuration["Conne
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddSingleton<IRabbitMQMessageSender, RabbitMQMessageSender>();
 
 var app = builder.Build();
 
