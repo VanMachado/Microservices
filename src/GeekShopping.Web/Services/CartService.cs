@@ -82,13 +82,15 @@ namespace GeekShopping.Web.Services
             throw new NotImplementedException();
         }
 
-        public async Task<CartHeaderViewmModel> Checkout(CartHeaderViewmModel cartHeader, string token)
+        public async Task<object> Checkout(CartHeaderViewmModel cartHeader, string token)
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.PostAsJson($"{BasePath}/checkout", cartHeader);
 
             if (response.IsSuccessStatusCode)
                 return await response.ReadContentAs<CartHeaderViewmModel>();
+            else if (response.StatusCode.ToString().Equals("PreconditionFailed"))
+                return "Coupon Price has changed, please confirm!";
 
             throw new Exception("Somenthing went wrong when calling API");
         }
