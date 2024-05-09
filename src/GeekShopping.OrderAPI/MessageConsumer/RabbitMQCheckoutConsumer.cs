@@ -1,6 +1,7 @@
 ﻿using GeekShopping.OrderApi.Repository;
 using GeekShopping.OrderAPI.Messages;
 using GeekShopping.OrderAPI.Model;
+using GeekShopping.OrderAPI.RabbitMQSender;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
@@ -13,11 +14,14 @@ namespace GeekShopping.OrderAPI.MessageConsumer
         private readonly OrderRepository _repository;
         private IConnection _connection;
         private IModel _channel;
+        private IRabbitMQMessageSender _rabbitMQMessageSender;
 
-        public RabbitMQCheckoutConsumer(OrderRepository repository)
+        public RabbitMQCheckoutConsumer(OrderRepository repository,
+            IRabbitMQMessageSender rabbitMQMessageSender)
         {
             _repository = repository;
-            var factory = new ConnectionFactory
+            _rabbitMQMessageSender = rabbitMQMessageSender;
+            var factory = new ConnectionFactory            
             {
                 HostName = "localhost",
                 Password = "guest",
@@ -43,7 +47,7 @@ namespace GeekShopping.OrderAPI.MessageConsumer
             };
             _channel.BasicConsume("checkoutqueue", false, consumer);
 
-            return Task.CompletedTask;            
+            return Task.CompletedTask;
         }
 
         private async Task ProcessOrder(CheckOutHeaderDto dto)
@@ -67,7 +71,7 @@ namespace GeekShopping.OrderAPI.MessageConsumer
                 DateTime = dto.DateTime
             };
 
-            foreach(var details in dto.CartDetails)
+            foreach (var details in dto.CartDetails)
             {
                 OrderDetail detail = new()
                 {
@@ -81,6 +85,27 @@ namespace GeekShopping.OrderAPI.MessageConsumer
             };
 
             await _repository.AddOrder(order);
+
+            PaymentDto payment = new()
+            {
+                Name = order.FirstName + " " + order.LastName,
+                CardNumber = order.CardNumber,
+                CVV = order.CVV,
+                ExpiryMonthYear = order.ExpiryMonthYear,
+                OrderId = order.Id,
+                PurchaseAmount = order.PurchaseAmount,
+                Email = order.Email
+            };
+
+            try
+            {
+                _rabbitMQMessageSender.SendMessage(payment, "orderpaymentprocessqueue");
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }
