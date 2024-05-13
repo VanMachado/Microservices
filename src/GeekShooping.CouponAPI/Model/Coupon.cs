@@ -11,6 +11,6 @@ namespace GeekShopping.CouponAPI.Model
         [StringLength(30)]
         public string CouponCode { get; set; }
         [Required]        
-        public double DiscountAmount { get; set; }        
+        public decimal DiscountAmount { get; set; }        
     }
 }

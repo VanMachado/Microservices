@@ -1,17 +1,13 @@
-using AutoMapper;
-using GeekShopping.CartAPI.Config;
-using GeekShopping.CartAPI.Infra.Data;
-using GeekShopping.CartAPI.RabbitMQSender;
-using GeekShopping.CartAPI.Repository;
+using GeekShopping.PaymentAPI.MessageConsumer;
+using GeekShopping.PaymentAPI.RabbitMQSender;
+using GeekShopping.PaymentProcessor;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 
 // Add services to the container.
 builder.Services.AddControllers();
-
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
@@ -29,9 +25,11 @@ builder.Services.AddAuthorization(options =>
         policy.RequireClaim("scope", "geek_shopping");
     });
 });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShopping.PaymentAPI", Version = "v1" });
     c.EnableAnnotations();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -59,15 +57,9 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-builder.Services.AddSqlServer<ApplicationDbContext>(builder.Configuration["ConnectionStrings:CartAPI"]);
-builder.Services.AddSingleton(mapper);
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<ICartRepository, CartRepository>();
-builder.Services.AddScoped<ICouponRepository, CouponRepository>();
+builder.Services.AddSingleton<IProcessPayment, ProcessPayment>();
 builder.Services.AddSingleton<IRabbitMQMessageSender, RabbitMQMessageSender>();
-
-builder.Services.AddHttpClient<ICouponRepository, CouponRepository>(s => s.BaseAddress = new Uri(
-    builder.Configuration["ServiceUrls:CouponApi"]));
+builder.Services.AddHostedService<RabbitMQPaymentConsumer>();
 
 var app = builder.Build();
 
@@ -79,8 +71,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 

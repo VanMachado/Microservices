@@ -91,8 +91,10 @@ namespace GeekShopping.CartAPI.Controllers
         [HttpPost("checkout")]
         public async Task<ActionResult<CheckoutHeaderDto>> Checkout(CheckoutHeaderDto dto)
         {
-            var token = Request.Headers["Authorization"];
-            
+            string token = Request.Headers["Authorization"];            
+            string[] valideToken = token.Split(" ");
+            string correctToken = valideToken[1];
+
             if (dto?.UserId == null)
                 return BadRequest();
            
@@ -100,7 +102,7 @@ namespace GeekShopping.CartAPI.Controllers
 
             if (!string.IsNullOrEmpty(dto.CouponCode))
             {
-                CouponDto coupon = await _couponRepository.GetCouponByCouponCode(dto.CouponCode, token);
+                CouponDto coupon = await _couponRepository.GetCoupon(dto.CouponCode, correctToken);
                 if (dto.DiscountAmount != coupon.DiscountAmount)
                     return StatusCode(412);
             }
@@ -112,6 +114,7 @@ namespace GeekShopping.CartAPI.Controllers
 
             _rabbitMQMessageSender.SendMessage(dto, "checkoutqueue");
 
+            await _cartRepository.ClearCart(dto.UserId);
             return Ok(dto);
         }
     }

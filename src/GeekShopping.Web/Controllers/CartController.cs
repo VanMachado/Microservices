@@ -86,7 +86,7 @@ namespace GeekShopping.Web.Controllers
                 return RedirectToAction(nameof(Confirmation));
                 
 
-            return View(await FindUserCart());
+            return View(model);
         }
 
         [HttpGet]

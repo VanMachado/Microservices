@@ -22,7 +22,8 @@ namespace GeekShopping.CartAPI.Repository
             //Instanciado o cart
             Cart cart = new()
             {
-                CartHeader = await _context.CartHeaders.FirstOrDefaultAsync(x => x.UserId == userId),
+                CartHeader = await _context.CartHeaders.FirstOrDefaultAsync(x => x.UserId == userId) ?? 
+                    new CartHeader(),
             };
             cart.CartDetails = _context.CartDetails
                 .Where(p => p.CartHeaderId == cart.CartHeader.Id)

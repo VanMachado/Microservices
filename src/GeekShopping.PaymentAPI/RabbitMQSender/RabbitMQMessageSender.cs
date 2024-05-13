@@ -1,10 +1,10 @@
-﻿using GeekShopping.CartAPI.Messages;
+﻿using GeekShopping.PaymentAPI.Messages;
 using GeekShopping.MessageBus;
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
 
-namespace GeekShopping.CartAPI.RabbitMQSender
+namespace GeekShopping.PaymentAPI.RabbitMQSender
 {
     public class RabbitMQMessageSender : IRabbitMQMessageSender
     {
@@ -12,6 +12,9 @@ namespace GeekShopping.CartAPI.RabbitMQSender
         private readonly string _password;
         private readonly string _username;
         private IConnection _connection;
+        private const string ExchangeName = "DirectPaymentUpdateExchange";
+        private const string PaymentEmailUpdateQueueName = "PaymentEmailUpdateQueueName";
+        private const string PaymentOrderUpdateQueueName = "PaymentOrderUpdateQueueName";
 
         public RabbitMQMessageSender()
         {
@@ -20,15 +23,22 @@ namespace GeekShopping.CartAPI.RabbitMQSender
             _username = "guest";
         }
 
-        public void SendMessage(BaseMessage message, string queueName)
+        public void SendMessage(BaseMessage message)
         {
             if(ConnectionExists())
             {
                 using var channel = _connection.CreateModel();
-                channel.QueueDeclare(queue: queueName, false, false, false, arguments: null);
+                channel.ExchangeDeclare(ExchangeName, ExchangeType.Direct, false);
 
+                channel.QueueDeclare(PaymentEmailUpdateQueueName, false, false, false);
+                channel.QueueDeclare(PaymentOrderUpdateQueueName, false, false, false);
+
+                channel.ExchangeBind(PaymentEmailUpdateQueueName, ExchangeName, "PaymentEmail");
+                channel.ExchangeBind(PaymentOrderUpdateQueueName, ExchangeName, "PaymentOrder");
+                
                 byte[] body = GetMessageAsByteArray(message);
-                channel.BasicPublish(exchange: "", routingKey: queueName, basicProperties: null, body);
+                channel.BasicPublish(ExchangeName, "PaymentEmail", basicProperties: null, body);
+                channel.BasicPublish(ExchangeName, "PaymentOrder", basicProperties: null, body);
             }
         }
 
@@ -38,7 +48,7 @@ namespace GeekShopping.CartAPI.RabbitMQSender
             {
                 WriteIndented = true,
             };
-            var json = JsonSerializer.Serialize<CheckoutHeaderDto>((CheckoutHeaderDto)message, options);
+            var json = JsonSerializer.Serialize<UpdatePaymenteResultMessage>((UpdatePaymenteResultMessage)message, options);
 
             return Encoding.UTF8.GetBytes(json);
         }
